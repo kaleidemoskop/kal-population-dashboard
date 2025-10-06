@@ -1,0 +1,28 @@
+Variante,Header,Varianten-Code,Geburtenrate 2070,Lebenserwartung bei Geburt 2070,Durchschnittlicher Wanderungssaldo
+1,Variante 1: Moderate Entwicklung der Geburtenhäufigkeit und Lebenserwartung bei niedrigem Wanderungssaldo (G2L2W1),G2L2W1,"Rückgang in 2022, danach Anstieg auf 1,55 Kinder je Frau","84,6 für Jungen | 88,2 für Mädchen",180 000 Personen
+2,"Variante 2: Moderate Entwicklung der Geburtenhäufigkeit, der Lebenserwartung und des Wanderungssaldos (G2L2W2)",G2L2W2,"Rückgang in 2022, danach Anstieg auf 1,55 Kinder je Frau","84,6 für Jungen | 88,2 für Mädchen",290 000 Personen
+3,Variante 3: Moderate Entwicklung der Geburtenhäufigkeit und Lebenserwartung bei hohem Wanderungssaldo (G2L2W3),G2L2W3,"Rückgang in 2022, danach Anstieg auf 1,55 Kinder je Frau","84,6 für Jungen | 88,2 für Mädchen",400 000 Personen
+4,Variante 4: Relativ alte Bevölkerung (G1L3W1),G1L3W1,"Rückgang auf 1,44 Kinder je Frau","86,4 für Jungen | 90,1 für Mädchen",180 000 Personen
+5,Variante 5: Relativ junge Bevölkerung (G3L1W3),G3L1W3,"Rückgang in 2022, danach Anstieg auf 1,67 Kinder je Frau","82,6 für Jungen | 86,1 für Mädchen",400 000 Personen
+6,Variante 6: Auswirkungen einer sinkenden Geburtenhäufigkeit (G1L2W2),G1L2W2,"Rückgang auf 1,44 Kinder je Frau","84,6 für Jungen | 88,2 für Mädchen",290 000 Personen
+7,Variante 7: Auswirkungen einer steigenden Geburtenhäufigkeit  (G3L2W2),G3L2W2,"Rückgang in 2022, danach Anstieg auf 1,67 Kinder je Frau","84,6 für Jungen | 88,2 für Mädchen",290 000 Personen
+8,Variante 8: Auswirkungen eines geringeren Anstiegs der Lebenserwartung (G2L1W2),G2L1W2,"Rückgang in 2022, danach Anstieg auf 1,55 Kinder je Frau","82,6 für Jungen | 86,1 für Mädchen",290 000 Personen
+9,Variante 9: Auswirkungen eines stärkeren Anstiegs der Lebenserwartung (G2L3W2),G2L3W2,"Rückgang in 2022, danach Anstieg auf 1,55 Kinder je Frau","86,4 für Jungen | 90,1 für Mädchen",290 000 Personen
+10,Variante 10: Bevölkerungsminimum (G1L1W1),G1L1W1,"Rückgang auf 1,44 Kinder je Frau","82,6 für Jungen | 86,1 für Mädchen",180 000 Personen
+11,Variante 11: Bevölkerungsmaximum (G3L3W3),G3L3W3,"Rückgang in 2022, danach Anstieg auf 1,67 Kinder je Frau","86,4 für Jungen | 90,1 für Mädchen",400 000 Personen
+12,"Variante 12: Sinkende Geburtenhäufigkeit, moderate Entwicklung der Lebenserwartung, niedriger Wanderungssaldo (G1L2W1)",G1L2W1,"Rückgang auf 1,44 Kinder je Frau","84,6 für Jungen | 88,2 für Mädchen",180 000 Personen
+13,Variante 13: Geringer Anstieg der Lebenserwartung und niedriger Wanderungssaldo (G2L1W1),G2L1W1,"Rückgang in 2022, danach Anstieg auf 1,55 Kinder je Frau","82,6 für Jungen | 86,1 für Mädchen",180 000 Personen
+14,Variante 14: Starker Anstieg der Lebenserwartung und niedriger Wanderungssaldo (G2L3W1),G2L3W1,"Rückgang in 2022, danach Anstieg auf 1,55 Kinder je Frau","86,4 für Jungen | 90,1 für Mädchen",180 000 Personen
+15,Variante 15: Sinkende Geburtenhäufigkeit und geringer Anstieg der Lebenserwartung (G1L1W2),G1L1W2,"Rückgang auf 1,44 Kinder je Frau","82,6 für Jungen | 86,1 für Mädchen",290 000 Personen
+16,Variante 16: Sinkende Geburtenhäufigkeit und starker Anstieg der Lebenserwartung (G1L3W2),G1L3W2,"Rückgang auf 1,44 Kinder je Frau","86,4 für Jungen | 90,1 für Mädchen",290 000 Personen
+17,Variante 17: Steigende Geburtenhäufigkeit und geringer Anstieg der Lebenserwartung (G3L1W2),G3L1W2,"Rückgang in 2022, danach Anstieg auf 1,67 Kinder je Frau","82,6 für Jungen | 86,1 für Mädchen",290 000 Personen
+18,Variante 18: Steigende Geburtenhäufigkeit und starker Anstieg der Lebenserwartung (G3L3W2),G3L3W2,"Rückgang in 2022, danach Anstieg auf 1,67 Kinder je Frau","86,4 für Jungen | 90,1 für Mädchen",290 000 Personen
+19,Variante 19: Geringer Anstieg der Lebenserwartung und hoher Wanderungssaldo (G2L1W3),G2L1W3,"Rückgang in 2022, danach Anstieg auf 1,55 Kinder je Frau","82,6 für Jungen | 86,1 für Mädchen",400 000 Personen
+20,Variante 20: Starker Anstieg der Lebenserwartung und hoher Wanderungssaldo (G2L3W3),G2L3W3,"Rückgang in 2022, danach Anstieg auf 1,55 Kinder je Frau","86,4 für Jungen | 90,1 für Mädchen",400 000 Personen
+21,Variante 21: Steigende Geburtenhäufigkeit und hoher Wanderungssaldo (G3L2W3),G3L2W3,"Rückgang in 2022, danach Anstieg auf 1,67 Kinder je Frau","84,6 für Jungen | 88,2 für Mädchen",400 000 Personen
+22,"Modellrechnung 1: Steigende Geburtenhäufigkeit, niedriger Wanderungssaldo, geringer Anstieg der Lebenserwartun (G3L1W1)",G3L1W1,"Rückgang in 2022, danach Anstieg auf 1,67 Kinder je Frau","82,6 für Jungen | 86,1 für Mädchen",180 000 Personen
+23,"Modellrechnung 2: Steigende Geburtenhäufigkeit, niedriger Wanderungssaldo, moderater Anstieg der Lebenserwartung (G3L2W1)",G3L2W1,"Rückgang in 2022, danach Anstieg auf 1,67 Kinder je Frau","84,6 für Jungen | 88,2 für Mädchen",180 000 Personen
+24,"Modellrechnung 3: Steigende Geburtenhäufigkeit, niedriger Wanderungssaldo, starker Anstieg der Lebenserwartung (G3L3W1)",G3L3W1,"Rückgang in 2022, danach Anstieg auf 1,67 Kinder je Frau","86,4 für Jungen | 90,1 für Mädchen",180 000 Personen
+25,"Modellrechnung 4: Sinkende Geburtenhäufigkeit, hoher Wanderungssaldo, geringer Anstieg der Lebenserwartung (G1L1W3)",G1L1W3,"Rückgang auf 1,44 Kinder je Frau","82,6 für Jungen | 86,1 für Mädchen",400 000 Personen
+26,"Modellrechnung 5: Sinkende Geburtenhäufigkeit, hoher Wanderungssaldo, moderater Anstieg der Lebenserwartung (G1L2W3)",G1L2W3,"Rückgang auf 1,44 Kinder je Frau","84,6 für Jungen | 88,2 für Mädchen",400 000 Personen
+27,"Modellrechnung 6: Sinkende Geburtenhäufigkeit, hoher Wanderungssaldo, starker Anstieg der Lebenserwartung (G1L3W3)",G1L3W3,"Rückgang auf 1,44 Kinder je Frau","86,4 für Jungen | 90,1 für Mädchen",400 000 Personen

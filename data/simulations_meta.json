@@ -1,0 +1,5 @@
+{
+    "init_population": 40000,
+    "scaling_factor": 2.080925,
+    "sims_per_scenario": 3
+}
