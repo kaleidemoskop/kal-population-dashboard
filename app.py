@@ -89,11 +89,14 @@ def build_scenario_selector():
 
 app = dash.Dash(__name__)
 
+# THIS IS THE CRITICAL LINE FOR DEPLOYMENT
+server = app.server
+
 app.layout = html.Div(style={
     'fontFamily': 'Segoe UI, sans-serif',
     'padding': '25px',
     'color': '#222',
-    'fontSize': '15px',  # Einheitlich etwas größer
+    'fontSize': '15px',
     'lineHeight': '1.6'
 }, children=[
     html.H1("Interaktives Bevölkerungs-Dashboard", style={'fontSize': '28px', 'marginBottom': '5px'}),
@@ -157,7 +160,7 @@ app.layout = html.Div(style={
                                 'borderRadius': '8px',
                                 'padding': '15px',
                                 'width': '1000px',
-                                'marginLeft': '20px'  # leicht nach rechts verschoben
+                                'marginLeft': '20px'
                             },
                             children=[
                                 dcc.Slider(
@@ -662,4 +665,5 @@ def update_tables(g_val, l_val, w_val, selected_year, benchmark_mode, historical
 
 # --- 4. App starten ---
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    app.run_server(debug=True)
+
