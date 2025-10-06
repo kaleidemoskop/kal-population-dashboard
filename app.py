@@ -664,6 +664,8 @@ def update_tables(g_val, l_val, w_val, selected_year, benchmark_mode, historical
 
 
 # --- 4. App starten ---
+# This block runs ONLY when you execute the script directly (e.g., python app.py)
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    # The command 'app.run' is for the newer versions of Dash
+    app.run(debug=True)
 
