@@ -93,24 +93,31 @@ app = dash.Dash(__name__)
 server = app.server
 
 app.layout = html.Div(style={
-    'fontFamily': 'Segoe UI, sans-serif',
+    # --- LAYOUT: Main container for the whole app ---
+    'maxWidth': '1400px',   # Set a max width for large screens
+    'margin': '0 auto',      # Center the app on the page
     'padding': '25px',
+    'fontFamily': 'Segoe UI, sans-serif',
     'color': '#222',
     'fontSize': '15px',
     'lineHeight': '1.6'
 }, children=[
-    html.H1("Interaktives Bevölkerungs-Dashboard", style={'fontSize': '28px', 'marginBottom': '5px'}),
+
+    # --- HEADER SECTION ---
+    html.Div(style={'display': 'flex', 'justifyContent': 'space-between', 'alignItems': 'center'}, children=[
+        html.H1("Interaktives Bevölkerungs-Dashboard", style={'fontSize': '28px', 'marginBottom': '5px'}),
+        html.Img(src='/assets/logo_kal.png', style={'height': '100px', 'width': 'auto'})
+    ]),
     html.Hr(style={'marginTop': '10px', 'marginBottom': '25px'}),
 
-    # --- Ausgabebereich (Grafik und Tabelle) ---
+    # --- Main Content Area ---
     html.Div(style={'display': 'flex'}, children=[
         
-        # Linke Spalte für die Pyramide und den Slider
-        html.Div(style={'width': '65%', 'paddingRight': '20px'}, children=[
+        # --- LAYOUT: Left Column is now flexible ---
+        html.Div(style={'flex': '1', 'minWidth': '0', 'paddingRight': '20px'}, children=[
 
             # Container für Graph, Buttons, Slider
-            html.Div(style={'maxWidth': '700px'}, children=[
-
+            html.Div(children=[
                 html.Div(
                     id='current-year-display',
                     style={
@@ -152,33 +159,33 @@ app.layout = html.Div(style={
                     ]
                 ),
 
-                # Der Slider direkt darunter
+                # --- LAYOUT: responsive slider ---
                 html.Div(
-                            style={
-                                'backgroundColor': '#f8f9fa',
-                                'boxShadow': '0 2px 5px rgba(0,0,0,0.1)',
-                                'borderRadius': '8px',
-                                'padding': '15px',
-                                'width': '1000px',
-                                'marginLeft': '20px'
-                            },
-                            children=[
-                                dcc.Slider(
-                                    id='year-slider',
-                                    min=min(available_years),
-                                    max=max(available_years),
-                                    value=min(available_years),
-                                    marks={str(year): str(year) for year in available_years if year % 10 == 0},
-                                    step=1,
-                                    tooltip={"placement": "bottom", "always_visible": False},
-                                    updatemode='drag',
-                                )
-                            ]
-                        ),
+                    style={
+                        'backgroundColor': '#f8f9fa',
+                        'boxShadow': '0 2px 5px rgba(0,0,0,0.1)',
+                        'borderRadius': '8px',
+                        'padding': '15px',
+                        'width': 'calc(100% - 40px)', # Responsive width
+                        'marginLeft': '20px'
+                    },
+                    children=[
+                        dcc.Slider(
+                            id='year-slider',
+                            min=min(available_years),
+                            max=max(available_years),
+                            value=min(available_years),
+                            marks={str(year): str(year) for year in available_years if year % 10 == 0},
+                            step=1,
+                            tooltip={"placement": "bottom", "always_visible": False},
+                            updatemode='drag',
+                        )
+                    ]
+                ),
             ]),
         ]),
 
-        # Rechte Spalte
+        # Rechte Spalte (no style changes needed here)
         html.Div(
             style={
                 'flex': '0 1 450px',
@@ -261,15 +268,15 @@ app.layout = html.Div(style={
                         ])
                     ]
                 ),
-                html.Div(
-                    style={
-                        'marginTop': '30px',
-                        'fontSize': '12px',
-                        'color': '#888',
-                        'textAlign': 'right'
-                    },
-                    children="Version 1.0 · Kaleidemoskop © 2025"
-                )
+                # --- Footer Section ---
+                html.Div(style={'textAlign': 'right', 'marginTop': '30px', 'fontSize': '12px', 'color': '#888'}, children=[
+                    "Version 1.0 · Kaleidemoskop © 2025 · ",
+                    html.A(
+                        "Impressum",
+                        href="https://kaleidemoskop.de/impressum/",
+                        target="_blank" # Opens link in a new tab
+                    )
+                ]),
             ]
         )
 
@@ -460,18 +467,16 @@ def update_pyramid_figure(g_val, l_val, w_val, selected_year, benchmark_mode, hi
                 showlegend=False
             )
 
-    # === LAYOUT ===
+    # --- LAYOUT ---
     fig_pyramid.update_layout(
-        autosize=False,
         height=800,
-        width=1000,
         barmode='overlay',
         plot_bgcolor='white',
         paper_bgcolor='white',
         xaxis=dict(
             title='Bevölkerung (in Tausend)',
             tickformat=',.0f',
-            range=[-global_max_val, global_max_val],
+            range=[-global_max_val, global_max_val], # This keeps the data scale stable
             tickvals=[-800, -600, -400, -200, 0, 200, 400, 600, 800],
             ticktext=['800', '600', '400', '200', '0', '200', '400', '600', '800']
         ),
