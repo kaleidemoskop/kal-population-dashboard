@@ -5,14 +5,20 @@ import dash
 from dash import dcc, html
 from dash.dependencies import Input, Output, State
 import json
+import os
 
-# --- 1. Daten laden und vorbereiten ---
+# --- 1. prepare data ---
 
-# Dateipfade definieren
-PYRAMID_DATA_PATH = 'data/pyramid_agg.csv'
-AGESTATS_DATA_PATH = 'data/agestats_agg.csv'
-PYRAMID_DESTATIS_PATH = 'data/pyramid_destatis.csv'
-AGESTATS_DESTATIS_PATH = 'data/agestats_destatis.csv'
+# get the directory of this app
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, 'data')
+
+# paths to data files
+PYRAMID_DATA_PATH = os.path.join(DATA_DIR, 'pyramid_agg.csv')
+AGESTATS_DATA_PATH = os.path.join(DATA_DIR, 'agestats_agg.csv')
+PYRAMID_DESTATIS_PATH = os.path.join(DATA_DIR, 'pyramid_destatis.csv')
+AGESTATS_DESTATIS_PATH = os.path.join(DATA_DIR, 'agestats_destatis.csv')
+SIMULATIONS_META_PATH = os.path.join(DATA_DIR, 'simulations_meta.json')
 
 try:
     df_pyramid = pd.read_csv(PYRAMID_DATA_PATH)
@@ -20,37 +26,36 @@ try:
     df_pyramid_destatis = pd.read_csv(PYRAMID_DESTATIS_PATH)
     df_agestats_destatis = pd.read_csv(AGESTATS_DESTATIS_PATH)
 except FileNotFoundError as e:
-    print("Fehler: Mindestens eine der CSV-Dateien wurde nicht gefunden.")
-    print("Bitte stelle sicher, dass folgende Dateien im Verzeichnis 'data/' vorhanden sind:")
+    print("Error: One or more data files are missing.")
+    print("Please ensure the following files are present in the 'data' directory:")
     print(f" - {PYRAMID_DATA_PATH}")
     print(f" - {AGESTATS_DATA_PATH}")
     print(f" - {PYRAMID_DESTATIS_PATH}")
     print(f" - {AGESTATS_DESTATIS_PATH}")
-    print("\nFehlermeldung:")
+    print("\nError:")
     print(e)
     exit()
 
-# parameter einlesen
-with open("data/simulations_meta.json") as f:
+# read meta information
+with open(SIMULATIONS_META_PATH) as f:
     meta_information = json.load(f)
 
-# zugriff auf Werte
+# get values
 init_population = meta_information["init_population"]
 sims_per_scenario = meta_information["sims_per_scenario"]
 scaling_factor = meta_information["scaling_factor"]
 
-
 # remove rows with age_in_years >= 100 to fit DESTATIS format
 df_pyramid = df_pyramid.query("age_in_years <= 100")
 
-# eindeutige Werte für die Steuerelemente extrahieren
+# extract values for frontend controls
 available_scenarios = df_pyramid['scenario_label'].unique()
 available_years = sorted(df_pyramid['simulation_year'].unique())
 simulation_years = sorted(df_pyramid['simulation_year'].unique())
 destatis_years = sorted(df_pyramid_destatis['simulation_year'].unique())
 simulation_start_year = simulation_years[0]
 
-# Berechne den globalen Maximalwert für eine statische Achse
+# determine global max for pyramid x-axis scaling
 global_max_val = abs(df_pyramid['count_signed']).max() * 1.1
 
 # function to build the scenario selector
@@ -61,31 +66,32 @@ def build_scenario_selector():
     radio_style = {'display': 'inline-block', 'margin': '0 15px'}
 
     return html.Div([
-        # Titelzeile
+        # title
         html.Div(style={'display': 'flex'}, children=[
             html.Div(style={'width': '150px'}), # Leerraum für Ausrichtung
             html.Div("niedrig", style={'flex': '1', 'textAlign': 'center'}),
             html.Div("moderat", style={'flex': '1', 'textAlign': 'center'}),
             html.Div("hoch", style={'flex': '1', 'textAlign': 'center'}),
         ]),
-        # Geburtenrate
+        # birth rate
         html.Div(style=row_style, children=[
             html.Label("Geburtenhäufigkeit", style=label_style),
-            dcc.RadioItems(id='g-radio', options=[{'label': ' G1', 'value': 'G1'}, {'label': ' G2', 'value': 'G2'}, {'label': ' G3', 'value': 'G3'}], value='G1', labelStyle=radio_style, style={'flex': '1', 'display': 'flex', 'justifyContent': 'space-around'})
+            dcc.RadioItems(id='g-radio', options=[{'label': ' G1', 'value': 'G1'}, {'label': ' G2', 'value': 'G2'}, {'label': ' G3', 'value': 'G3'}], value='G2', labelStyle=radio_style, style={'flex': '1', 'display': 'flex', 'justifyContent': 'space-around'})
         ]),
-        # Lebenserwartung
+        # life expectancy
         html.Div(style=row_style, children=[
             html.Label("Lebenserwartung", style=label_style),
-            dcc.RadioItems(id='l-radio', options=[{'label': ' L1', 'value': 'L1'}, {'label': ' L2', 'value': 'L2'}, {'label': ' L3', 'value': 'L3'}], value='L1', labelStyle=radio_style, style={'flex': '1', 'display': 'flex', 'justifyContent': 'space-around'})
+            dcc.RadioItems(id='l-radio', options=[{'label': ' L1', 'value': 'L1'}, {'label': ' L2', 'value': 'L2'}, {'label': ' L3', 'value': 'L3'}], value='L2', labelStyle=radio_style, style={'flex': '1', 'display': 'flex', 'justifyContent': 'space-around'})
         ]),
-        # Wanderung
+        # migration balance
         html.Div(style=row_style, children=[
             html.Label("Wanderungssaldo", style=label_style),
-            dcc.RadioItems(id='w-radio', options=[{'label': ' W1', 'value': 'W1'}, {'label': ' W2', 'value': 'W2'}, {'label': ' W3', 'value': 'W3'}], value='W1', labelStyle=radio_style, style={'flex': '1', 'display': 'flex', 'justifyContent': 'space-around'})
+            dcc.RadioItems(id='w-radio', options=[{'label': ' W1', 'value': 'W1'}, {'label': ' W2', 'value': 'W2'}, {'label': ' W3', 'value': 'W3'}], value='W2', labelStyle=radio_style, style={'flex': '1', 'display': 'flex', 'justifyContent': 'space-around'})
         ]),
     ])
 
-# --- 2. Dash-App und Layout definieren ---
+
+# --- 2. define dash app and layout ---
 
 app = dash.Dash(__name__)
 
@@ -93,7 +99,7 @@ app = dash.Dash(__name__)
 server = app.server
 
 app.layout = html.Div(style={
-    # --- LAYOUT: Main container for the whole app ---
+    # layout - main container for the whole app
     'maxWidth': '1400px',   # Set a max width for large screens
     'margin': '0 auto',      # Center the app on the page
     'padding': '25px',
@@ -103,20 +109,20 @@ app.layout = html.Div(style={
     'lineHeight': '1.6'
 }, children=[
 
-    # --- HEADER SECTION ---
+    # header section
     html.Div(style={'display': 'flex', 'justifyContent': 'space-between', 'alignItems': 'center'}, children=[
         html.H1("Interaktives Bevölkerungs-Dashboard", style={'fontSize': '28px', 'marginBottom': '5px'}),
         html.Img(src='/assets/logo_kal.png', style={'height': '100px', 'width': 'auto'})
     ]),
     html.Hr(style={'marginTop': '10px', 'marginBottom': '25px'}),
 
-    # --- Main Content Area ---
+    # main content
     html.Div(style={'display': 'flex'}, children=[
         
-        # --- LAYOUT: Left Column is now flexible ---
+        # layout - felx container for left and right column
         html.Div(style={'flex': '1', 'minWidth': '0', 'paddingRight': '20px'}, children=[
 
-            # Container für Graph, Buttons, Slider
+            # container for pyramid and slider
             html.Div(children=[
                 html.Div(
                     id='current-year-display',
@@ -130,14 +136,14 @@ app.layout = html.Div(style={
                     }
                 ),
 
-                # Die Bevölkerungspyramide
+                # the actual pyramid graph
                 dcc.Graph(
                     id='population-pyramid',
                     style={'marginTop': '20px', 'width': '100%'},
                     config={'responsive': True},
                 ),
 
-                # Button-Box mit Schatten und Abstand zum Slider
+                # play and pause buttons
                 html.Div(
                     style={
                         'display': 'flex',
@@ -159,7 +165,7 @@ app.layout = html.Div(style={
                     ]
                 ),
 
-                # --- LAYOUT: responsive slider ---
+                # responsive year slider
                 html.Div(
                     style={
                         'backgroundColor': '#f8f9fa',
@@ -185,7 +191,7 @@ app.layout = html.Div(style={
             ]),
         ]),
 
-        # Rechte Spalte (no style changes needed here)
+        # right column for controls and stats
         html.Div(
             style={
                 'flex': '0 1 450px',
@@ -194,7 +200,7 @@ app.layout = html.Div(style={
             },
             children=[
 
-                # Checkbox-Gruppe für DESTATIS + Historische Daten
+                # check-boxes for benchmark and history mode
                 html.Div(
                     style={
                         'border': '1px solid #ccc',
@@ -228,7 +234,7 @@ app.layout = html.Div(style={
                     ]
                 ),
 
-                # Szenarioauswahl in eigener Box
+                # scenario selector box
                 html.Div(
                     style={
                         'border': '1px solid #ccc',
@@ -257,24 +263,37 @@ app.layout = html.Div(style={
                         'color': '#444'
                     },
                     children=[
-                        html.Strong("Methodologische Anmerkung:"),
+                        html.Strong("Methodischer Hinweis:"),
                         html.Ul(style={'marginTop': '10px', 'paddingLeft': '20px'}, children=[
-                            html.Li("27 Szenarien von DESTATIS wurden mit einem agentenbasierten Modell nachsimuliert."),
-                            html.Li(f"Pro Szenario wurden {sims_per_scenario} Simulationen mit je {init_population:,} Agenten durchgeführt."),
-                            html.Li("Dargestellt sind Durchschnittswerte über die jeweiligen Simulationsläufe."),
-                            html.Li(f"Absolute Werte wurden zur besseren Vergleichbarkeit um den Faktor {scaling_factor:.2f} "
-                                    f"auf die Bevölkerungsgröße des Jahres 2021 hochgerechnet und werden in Tausend dargestellt."
-                            ),  
+                            html.Li([
+                                "Als Benchmark dienen die 27 Szenarien der 15. koordinierten Bevölkerungsvorausberechnung des ",
+                                html.A(
+                                    "Statistischen Bundesamtes (DESTATIS)",
+                                    href="https://service.destatis.de/bevoelkerungspyramide/index.html",
+                                    target="_blank"
+                                ),
+                                "."
+                            ]),
+                            html.Li(
+                                f"Simulationsbasis: Agentenbasiertes Modell ({sims_per_scenario} Läufe je Szenario, {init_population:,} Agenten pro Lauf)."
+                            ),
+                            html.Li(
+                                f"Repräsentation: 1 Agent simuliert das Verhalten von ca. {round(scaling_factor)} Personen (Maßstab ≈ 1:{round(scaling_factor)})."
+                            ),
+                            html.Li(
+                                "Datenanzeige: Die dargestellten Zahlen sind Durchschnittswerte, die auf die Gesamtbevölkerung hochgerechnet und in Tausend angegeben werden."
+                            ),
                         ])
                     ]
                 ),
-                # --- Footer Section ---
+
+                # footer
                 html.Div(style={'textAlign': 'right', 'marginTop': '30px', 'fontSize': '12px', 'color': '#888'}, children=[
                     "Version 1.0 · Kaleidemoskop © 2025 · ",
                     html.A(
                         "Impressum",
                         href="https://kaleidemoskop.de/impressum/",
-                        target="_blank" # Opens link in a new tab
+                        target="_blank" # opens link in a new tab
                     )
                 ]),
             ]
@@ -283,7 +302,7 @@ app.layout = html.Div(style={
 
     ]),
 
-    # Unsichtbares Intervall für automatische Jahr-Steuerung (wird später aktiviert)
+    # important: hidden interval component for play/pause functionality
     dcc.Interval(
         id='year-interval',
         interval=500,  # in ms (1 Sekunde)
@@ -293,7 +312,7 @@ app.layout = html.Div(style={
 ])
 
 
-# --- 3. Callback zur Aktualisierung von Grafik und Tabelle ---
+# --- 3. callback functions for plot and table updates ---
 
 @app.callback(
     Output('year-interval', 'disabled'),
@@ -302,6 +321,7 @@ app.layout = html.Div(style={
     prevent_initial_call=True
 )
 def toggle_play_pause(play_clicks, pause_clicks):
+    """Enable or disable the interval component based on play/pause button clicks."""
     ctx = dash.callback_context
 
     if not ctx.triggered:
@@ -310,12 +330,11 @@ def toggle_play_pause(play_clicks, pause_clicks):
     triggered_id = ctx.triggered[0]['prop_id'].split('.')[0]
 
     if triggered_id == 'play-button':
-        return False  # ▶️ → Intervall aktiv
+        return False
     elif triggered_id == 'pause-button':
-        return True   # ⏸️ → Intervall inaktiv
+        return True
 
     raise dash.exceptions.PreventUpdate
-
 
 @app.callback(
     Output('year-slider', 'min'),
@@ -330,12 +349,13 @@ def toggle_play_pause(play_clicks, pause_clicks):
     State('year-slider', 'max')
 )
 def update_year_slider(benchmark_mode, history_mode, n_intervals, current_value, slider_min, slider_max):
+    """Update the year slider's min, max, marks, and value based on modes and interval."""
     benchmark_on = 'on' in (benchmark_mode or [])
     history_on = 'on' in (history_mode or [])
 
-    # Jahrbereich setzen
+    # adjust year range based on modes
     if history_on:
-        years = list(range(1950, 2071))  # inkl. historische Daten
+        years = list(range(1950, 2071))  # including historical years
     else:
         years = list(range(simulation_start_year, 2071))
 
@@ -343,12 +363,12 @@ def update_year_slider(benchmark_mode, history_mode, n_intervals, current_value,
     new_max = max(years)
     marks = {str(year): str(year) for year in years if year % 10 == 0}
 
-    # Jahr clampen
+    # clamp current value to new range
     if current_value is None:
         current_value = new_min
     current_value = max(min(current_value, new_max), new_min)
 
-    # Slider automatisch weiter bewegen?
+    # auto-increment year if interval is active
     ctx = dash.callback_context
     triggered = ctx.triggered[0]['prop_id'].split('.')[0] if ctx.triggered else None
     if triggered == 'year-interval':
@@ -361,12 +381,12 @@ def update_year_slider(benchmark_mode, history_mode, n_intervals, current_value,
 
     return new_min, new_max, marks, current_value
 
-
 @app.callback(
     Output('current-year-display', 'children'),
     Input('year-slider', 'value')
 )
 def update_current_year_display(selected_year):
+    """Update the display text for the currently selected year."""
     if selected_year is None:
         return "Jahr wird geladen..."
 
@@ -377,7 +397,6 @@ def update_current_year_display(selected_year):
         display_text += " (Simulation)"
         
     return display_text
-
 
 @app.callback(
     Output('population-pyramid', 'figure'),
@@ -391,18 +410,20 @@ def update_current_year_display(selected_year):
     ]
 )
 def update_pyramid_figure(g_val, l_val, w_val, selected_year, benchmark_mode, history_mode):
+    """Update the population pyramid figure based on selected scenario, year, and modes."""
     if selected_year is None:
         raise dash.exceptions.PreventUpdate
 
+    # determine active modes and scenario
     benchmark_active = 'on' in benchmark_mode
     history_active = 'on' in history_mode
     is_historical = selected_year < simulation_start_year
     selected_scenario = f"{g_val}{l_val}{w_val}"
 
-    # --- Leerer Plot vorbereiten ---
+    # initialize figure
     fig_pyramid = go.Figure()
 
-    # === (1) SIMULATIONSPLOT ===
+    # simulation layer
     pyramid_filtered = df_pyramid[
         (df_pyramid['scenario_label'] == selected_scenario) &
         (df_pyramid['simulation_year'] == selected_year)
@@ -421,7 +442,7 @@ def update_pyramid_figure(g_val, l_val, w_val, selected_year, benchmark_mode, hi
     fig_pyramid.update_traces(selector=dict(name='male'), name='Männer')
     fig_pyramid.update_traces(selector=dict(name='female'), name='Frauen')
 
-    # === (2) HISTORISCHER PLOT ===
+    # historical layer
     if history_active:
         historical_filtered = df_pyramid_destatis[
             (df_pyramid_destatis['scenario_label'] == 'Historical') &
@@ -442,7 +463,7 @@ def update_pyramid_figure(g_val, l_val, w_val, selected_year, benchmark_mode, hi
         fig_pyramid.update_traces(selector=dict(name='male'), name='Männer')
         fig_pyramid.update_traces(selector=dict(name='female'), name='Frauen')
         
-    # === (3) BENCHMARKPLOT (DESTATIS) ===
+    # benchmark layer
     if benchmark_active:
         pyramid_benchmark = df_pyramid_destatis[
             (df_pyramid_destatis['scenario_label'] == selected_scenario) &
@@ -467,7 +488,7 @@ def update_pyramid_figure(g_val, l_val, w_val, selected_year, benchmark_mode, hi
                 showlegend=False
             )
 
-    # --- LAYOUT ---
+    # laxout and styling
     fig_pyramid.update_layout(
         height=800,
         barmode='overlay',
@@ -476,7 +497,7 @@ def update_pyramid_figure(g_val, l_val, w_val, selected_year, benchmark_mode, hi
         xaxis=dict(
             title='Bevölkerung (in Tausend)',
             tickformat=',.0f',
-            range=[-global_max_val, global_max_val], # This keeps the data scale stable
+            range=[-global_max_val, global_max_val],
             tickvals=[-800, -600, -400, -200, 0, 200, 400, 600, 800],
             ticktext=['800', '600', '400', '200', '0', '200', '400', '600', '800']
         ),
@@ -496,7 +517,6 @@ def update_pyramid_figure(g_val, l_val, w_val, selected_year, benchmark_mode, hi
 
     return fig_pyramid
 
-
 @app.callback(
     Output('stats-table-container', 'children'),
     [Input('g-radio', 'value'),
@@ -507,16 +527,19 @@ def update_pyramid_figure(g_val, l_val, w_val, selected_year, benchmark_mode, hi
      Input('history-toggle', 'value')]
 )
 def update_tables(g_val, l_val, w_val, selected_year, benchmark_mode, historical_mode):
+    """Update the statistics table based on selected scenario, year, and modes."""
     if selected_year is None:
         raise dash.exceptions.PreventUpdate
     
+    # determine active modes
     benchmark_active = 'on' in benchmark_mode
     historical_active = 'on' in historical_mode
 
+    # determine which data to show
     selected_scenario = f"{g_val}{l_val}{w_val}"
     show_sim = selected_year >= simulation_start_year 
 
-    # Basistabelle: Simulation (falls erlaubt)
+    # simulation data
     if show_sim:
         agestats_sim = df_agestats[
             (df_agestats['scenario_label'] == selected_scenario) &
@@ -524,9 +547,9 @@ def update_tables(g_val, l_val, w_val, selected_year, benchmark_mode, historical
         ][['metric', 'value']].rename(columns={'value': 'Simulation'})
         table_df = agestats_sim
     else:
-        table_df = pd.DataFrame({'metric': []})  # leeres DF für Merge später
+        table_df = pd.DataFrame({'metric': []})  # placeholder for merging
 
-    # DESTATIS-Daten: wenn benchmark_mode aktiv (ab 2022) oder historical_mode aktiv (<2022)
+    # destatis data - if benchmark mode active (from 2022) or historical mode active (<2022)
     show_destatis = (
         (benchmark_active and selected_year >= simulation_start_year) or
         (historical_active and selected_year < simulation_start_year)
@@ -546,12 +569,11 @@ def update_tables(g_val, l_val, w_val, selected_year, benchmark_mode, historical
         if not agestats_benchmark.empty:
             table_df = pd.merge(table_df, agestats_benchmark, on='metric', how='outer')
 
-    # --- Metriken & Labels ---
+    # layout and styling of the table
     order = [
         'share_over_67', 'share_20_66', 'share_under_20', 'total_over_67',
         'total_20_66', 'total_under_20', 'old_quota', 'youth_quota', 'total_pop'
     ]
-    # --- Deutsche Labels ---
     labels = {
         'share_over_67': 'Anteil >67',
         'share_20_66': 'Anteil 20–66',
@@ -564,7 +586,7 @@ def update_tables(g_val, l_val, w_val, selected_year, benchmark_mode, historical
         'total_pop': 'Gesamtbevölkerung'
     }
 
-    # --- Werte formatieren ---
+    # format data for display
     def format_value(metric, value):
         if pd.isna(value):
             return "-"
@@ -573,7 +595,7 @@ def update_tables(g_val, l_val, w_val, selected_year, benchmark_mode, historical
         else:
             return f"{int(round(value)):,}"
         
-    # --- Stildefinitionen ---
+    # table styling
     table_style = {
         'width': '100%',
         'borderCollapse': 'collapse',
@@ -607,7 +629,7 @@ def update_tables(g_val, l_val, w_val, selected_year, benchmark_mode, historical
         'whiteSpace': 'nowrap'
     }
 
-    # --- Gruppierung der Metriken ---
+    # reorder table_df
     group_mapping = {
         'share': ['share_over_67', 'share_20_66', 'share_under_20'],
         'total': ['total_over_67', 'total_20_66', 'total_under_20'],
@@ -615,11 +637,12 @@ def update_tables(g_val, l_val, w_val, selected_year, benchmark_mode, historical
         'total_pop': ['total_pop']
     }
 
+    # parameters for table display
     only_benchmark = benchmark_active and selected_year < simulation_start_year
     show_sim = not only_benchmark
     show_destatis = benchmark_active
         
-    # --- Dynamische Header-Zeile ---
+    # filter and order table_df
     header_cols = [html.Th("Kennzahl", style=header_style_left)]
     if show_sim:
         header_cols.append(html.Th("Simulation", style=header_style_center))
@@ -627,13 +650,13 @@ def update_tables(g_val, l_val, w_val, selected_year, benchmark_mode, historical
         header_cols.append(html.Th("DESTATIS", style=header_style_center))
     table_header = [html.Thead(html.Tr(header_cols))]
 
-    # Tabellenzeilen mit Gruppierung
+    # build table rows
     table_rows = []
     for group_name, metrics in group_mapping.items():
         for i, metric in enumerate(metrics):
             row_data = table_df[table_df['metric'] == metric]
             if not row_data.empty:
-                # Stildefinition je nach Zeile
+                # style for total population row
                 is_total_pop = metric == 'total_pop'
                 row_style_left = {**cell_style_left}
                 row_style_center = {**cell_style_center}
@@ -641,7 +664,7 @@ def update_tables(g_val, l_val, w_val, selected_year, benchmark_mode, historical
                     row_style_left['fontWeight'] = 'bold'
                     row_style_center['fontWeight'] = 'bold'
 
-                # Zellenaufbau
+                # build row
                 cells = [html.Td(labels.get(metric, metric), style=row_style_left)]
                 if show_sim:
                     sim_val = row_data.iloc[0].get('Simulation', float('nan'))
@@ -652,7 +675,7 @@ def update_tables(g_val, l_val, w_val, selected_year, benchmark_mode, historical
 
                 table_rows.append(html.Tr(cells))
 
-            # Füge horizontale Linie **nach letzter Metrik** der Gruppe, außer bei letzter Gruppe
+            # add separator after each group except the last
             if i == len(metrics) - 1 and group_name != 'total_pop':
                 colspan = 1 + int(show_sim) + int(show_destatis)
                 table_rows.append(html.Tr([
@@ -667,10 +690,7 @@ def update_tables(g_val, l_val, w_val, selected_year, benchmark_mode, historical
     return html.Table(table_header + [html.Tbody(table_rows)], style=table_style)
 
 
-
-# --- 4. App starten ---
-# This block runs ONLY when you execute the script directly (e.g., python app.py)
+# --- 4. run the app (only locally) ---
 if __name__ == '__main__':
-    # The command 'app.run' is for the newer versions of Dash
     app.run(debug=True)
 
